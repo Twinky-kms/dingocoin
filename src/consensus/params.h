@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2016 The Bitcoin Core developers
-// Copyright (c) 2021-2022 The Dogecoin Core developers
+// Copyright (c) 2021-2022 The Dingocoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,6 +10,8 @@
 #include "uint256.h"
 #include <map>
 #include <string>
+#include <vector>
+
 
 namespace Consensus {
 
@@ -68,7 +70,7 @@ struct Params {
     int64_t nPowTargetTimespan;
     int64_t DifficultyAdjustmentInterval() const { return nPowTargetTimespan / nPowTargetSpacing; }
 
-    /** Dogecoin-specific parameters */
+    /** Dingocoin-specific parameters */
     bool fDigishieldDifficultyCalculation;
     bool fPowAllowDigishieldMinDifficultyBlocks; // Allow minimum difficulty blocks where a retarget would normally occur
     bool fSimplifiedRewards; // Use block height derived rewards rather than previous block hash derived
@@ -78,6 +80,7 @@ struct Params {
 
     /** Auxpow parameters */
     int32_t nAuxpowChainId;
+    std::vector<int32_t> nAuxpowChainIds; // Includes all possible future chainIds.
     bool fStrictChainId;
     bool fAllowLegacyBlocks;
 
@@ -86,6 +89,8 @@ struct Params {
     struct Params *pLeft = nullptr;      // Left hand branch
     struct Params *pRight = nullptr;     // Right hand branch
     const Consensus::Params *GetConsensus(uint32_t nTargetHeight) const;
+
+    void InsertConsensus(Consensus::Params* item);
 };
 } // namespace Consensus
 

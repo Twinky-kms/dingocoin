@@ -1,4 +1,4 @@
-// Copyright (c) 2021 The Dogecoin Core developers
+// Copyright (c) 2021 The Dingocoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -22,10 +22,10 @@ enum FeeRatePreset
 };
 
 /** Estimate fee rate needed to get into the next nBlocks */
-CFeeRate GetDogecoinFeeRate(int priority);
-const std::string GetDogecoinPriorityLabel(int priority);
+CFeeRate GetDingocoinFeeRate(int priority);
+const std::string GetDingocoinPriorityLabel(int priority);
 #endif // ENABLE_WALLET
-CAmount GetDogecoinMinRelayFee(const CTransaction& tx, unsigned int nBytes, bool fAllowFree);
-CAmount GetDogecoinDustFee(const std::vector<CTxOut> &vout, const CAmount dustLimit);
+CAmount GetDingocoinMinRelayFee(const CTransaction& tx, unsigned int nBytes, bool fAllowFree);
+CAmount GetDingocoinDustFee(const std::vector<CTxOut> &vout, const CAmount dustLimit);
 
 #endif // BITCOIN_DOGECOIN_FEES_H
