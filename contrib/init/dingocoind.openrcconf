@@ -1,29 +1,29 @@
 # /etc/conf.d/dingocoind: config file for /etc/init.d/dingocoind
 
 # Config file location
-#DINGOCOIND_CONFIGFILE="/etc/dingocoin/dingocoin.conf"
+#DOGECOIND_CONFIGFILE="/etc/dingocoin/dingocoin.conf"
 
-# What directory to write pidfile to?  (created and owned by $DINGOCOIND_USER)
-#DINGOCOIND_PIDDIR="/var/run/dingocoind"
+# What directory to write pidfile to?  (created and owned by $DOGECOIND_USER)
+#DOGECOIND_PIDDIR="/var/run/dingocoind"
 
 # What filename to give the pidfile
-#DINGOCOIND_PIDFILE="${DINGOCOIND_PIDDIR}/dingocoind.pid"
+#DOGECOIND_PIDFILE="${DOGECOIND_PIDDIR}/dingocoind.pid"
 
 # Where to write dingocoind data (be mindful that the blockchain is large)
-#DINGOCOIND_DATADIR="/var/lib/dingocoind"
+#DOGECOIND_DATADIR="/var/lib/dingocoind"
 
 # User and group to own dingocoind process
-#DINGOCOIND_USER="dingocoin"
-#DINGOCOIND_GROUP="dingocoin"
+#DOGECOIND_USER="dingocoin"
+#DOGECOIND_GROUP="dingocoin"
 
 # Path to dingocoind executable
-#DINGOCOIND_BIN="/usr/bin/dingocoind"
+#DOGECOIND_BIN="/usr/bin/dingocoind"
 
 # Nice value to run dingocoind under
-#DINGOCOIND_NICE=0
+#DOGECOIND_NICE=0
 
 # Additional options (avoid -conf and -datadir, use flags above)
-DINGOCOIND_OPTS="-disablewallet"
+DOGECOIND_OPTS="-disablewallet"
 
 # The timeout in seconds OpenRC will wait for dingocoind to terminate
 # after a SIGTERM has been raised.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (c) 2022 The Dogecoin Core developers
+# Copyright (c) 2022 The Dingocoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #
@@ -105,7 +105,6 @@ class AddrTest(BitcoinTestFramework):
         addrs = []
         for i in range(num):
             addr = CAddress()
-            addr.with_time = True
             addr.time = self.mocktime + random.randrange(-100, 100)
             addr.nServices = services
             assert self.counter < 256 ** 2  # Don't allow the returned ip addresses to wrap.
@@ -140,6 +139,9 @@ class AddrTest(BitcoinTestFramework):
         # send a message with 2 addresses
         self.create_and_send_addr_msg(2)
 
+        # make sure we received the last addr record
+        assert self.wait_for_specific_port(self.last_port_sent())
+
     def oversized_addr_test(self):
         # create message with 1010 entries and
         # confirm that the node discarded the entries
@@ -160,9 +162,10 @@ class AddrTest(BitcoinTestFramework):
         valid_port_after = self.index_to_port(self.counter)
         self.create_and_send_addr_msg(1)
 
+        # wait until both valid addresses were propagated
+
         # make sure that all addresses from the invalid message were discarded
         # by making sure that none of them were propagated
-        for port in range(valid_port_before+1, valid_port_after):
             assert not self.have_received_port(port)
 
     def rate_limiting_test(self):

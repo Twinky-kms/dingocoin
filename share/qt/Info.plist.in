@@ -11,7 +11,7 @@
   </array>
 
   <key>CFBundleIconFile</key>
-  <string>bitcoin.icns</string>
+  <string>dingocoin.icns</string>
 
   <key>CFBundlePackageType</key>
   <string>APPL</string>
@@ -30,7 +30,6 @@
 
   <key>CFBundleExecutable</key>
   <string>Dingocoin-Qt</string>
-  
   <key>CFBundleName</key>
   <string>Dingocoin-Qt</string>
 
@@ -99,7 +98,7 @@
 
   <key>LSAppNapIsDisabled</key>
     <string>True</string>
-  
+
   <key>LSApplicationCategoryType</key>
     <string>public.app-category.finance</string>
 </dict>

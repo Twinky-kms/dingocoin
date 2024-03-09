@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2014-2016 The Bitcoin Core developers
+# Copyright (c) 2022-2024 The Dingocoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -115,7 +116,9 @@ testScripts = [
     # 'p2p-segwit.py',
     'wallet-dump.py',
     'listtransactions.py',
+    'p2p-policy.py',
     # vv Tests less than 60s vv
+    'p2p-acceptblock.py',
     'sendheaders.py',
     'zapwallettxes.py',
     'importmulti.py',
@@ -127,9 +130,12 @@ testScripts = [
     'rawtransactions.py',
     'reindex.py',
     'p2p-addr.py',
+    'p2p-tx-download.py',
     # vv Tests less than 30s vv
+    'walletnotify.py',
+    'p2p_invalid_locator.py',
     'mempool_resurrect_test.py',
-    #'txn_doublespend.py --mineblock',
+    'txn_doublespend.py --mineblock',
     'txn_clone.py',
     'getchaintips.py',
     'rest.py',
@@ -151,15 +157,28 @@ testScripts = [
     # 'p2p-versionbits-warning.py',
     'preciousblock.py',
     'importprunedfunds.py',
+    'createauxblock.py',
     'signmessages.py',
     # 'nulldummy.py',
     'import-rescan.py',
-    # While fee bumping should work in Dingo, these tests depend on free transactions, which we don't support.
+    'dustlimits.py',
+    'paytxfee.py',
+    'feelimit.py',
+    'setmaxconnections.py',
+    # While fee bumping should work in Doge, these tests depend on free transactions, which we don't support.
     # Disable until we can do a full rewrite of the tests (possibly upstream), or revise fee schedule, or something
-    # 'bumpfee.py',
+    'bumpfee.py',
     'rpcnamedargs.py',
     'listsinceblock.py',
     'p2p-leaktests.py',
+    'replace-by-fee.py',
+    'rescan.py',
+    'wallet_create_tx.py',
+    'liststucktransactions.py',
+    'getblock.py',
+    'getblockstats.py',
+    'addnode.py',
+    'getmocktime.py',
 ]
 if ENABLE_ZMQ:
     testScripts.append('zmq_test.py')
@@ -190,10 +209,6 @@ testScriptsExt = [
     'forknotify.py',
     'invalidateblock.py',
     'maxblocksinflight.py',
-    'p2p-acceptblock.py',
-    'replace-by-fee.py',
-    'rescan.py',
-    'setmaxconnections.py',
 ]
 
 
@@ -207,6 +222,10 @@ def runtests():
         for t in testScripts + testScriptsExt:
             if t in opts or re.sub(".py$", "", t) in opts:
                 test_list.append(t)
+
+    if len(test_list) == 0:
+        print(f"No tests selected; do you have a typo in {opts}?")
+        sys.exit(1)
 
     if print_help:
         # Only print help of the first script and exit

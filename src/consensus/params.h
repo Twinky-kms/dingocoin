@@ -1,5 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2016 The Bitcoin Core developers
+// Copyright (c) 2021-2022 The Dingocoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,6 +11,10 @@
 #include <map>
 #include <string>
 #include <vector>
+<<<<<<< HEAD
+=======
+
+>>>>>>> pr/1
 
 namespace Consensus {
 
@@ -89,9 +94,14 @@ struct Params {
     struct Params *pLeft = nullptr;      // Left hand branch
     struct Params *pRight = nullptr;     // Right hand branch
     const Consensus::Params *GetConsensus(uint32_t nTargetHeight) const;
+<<<<<<< HEAD
     void InsertConsensus(Consensus::Params* item);
 
 
+=======
+
+    void InsertConsensus(Consensus::Params* item);
+>>>>>>> pr/1
 };
 } // namespace Consensus
 

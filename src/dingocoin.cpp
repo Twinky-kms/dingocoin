@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2015 The Dingocoin Core developers
+=======
+// Copyright (c) 2015-2022 The Dingocoin Core developers
+>>>>>>> pr/1
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,11 +11,15 @@
 
 #include "policy/policy.h"
 #include "arith_uint256.h"
+<<<<<<< HEAD
 #include "consensus/params.h"
+=======
+>>>>>>> pr/1
 #include "dingocoin.h"
 #include "txmempool.h"
 #include "util.h"
 #include "validation.h"
+#include "dingocoin-fees.h"
 
 int static generateMTRandom(unsigned int s, int range)
 {

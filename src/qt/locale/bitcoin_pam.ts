@@ -60,7 +60,11 @@
     <name>BanTableModel</name>
     </context>
 <context>
+<<<<<<< HEAD
     <name>DingocoinGUI</name>
+=======
+    <name>BitcoinGUI</name>
+>>>>>>> pr/1
     <message>
         <source>Sign &amp;message...</source>
         <translation>I-sign ing &amp;mensayi</translation>
@@ -726,7 +730,11 @@
     <name>WalletView</name>
     </context>
 <context>
+<<<<<<< HEAD
     <name>dingocoin-core</name>
+=======
+    <name>bitcoin-core</name>
+>>>>>>> pr/1
     <message>
         <source>Options:</source>
         <translation>Pipamilian:</translation>

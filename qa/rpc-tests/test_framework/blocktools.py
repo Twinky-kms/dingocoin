@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # blocktools.py - utilities for manipulating blocks and transactions
 # Copyright (c) 2015-2016 The Bitcoin Core developers
+# Copyright (c) 2021-2022 The Dingocoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,7 +12,11 @@ from .script import CScript, OP_TRUE, OP_CHECKSIG, OP_RETURN
 def create_block(hashprev, coinbase, nTime=None):
     block = CBlock()
     # Dingocoin: Create a non-AuxPoW block but include chain ID
+<<<<<<< HEAD
     block.nVersion = 0x620003
+=======
+    block.nVersion = 0x620004
+>>>>>>> pr/1
     if nTime is None:
         import time
         block.nTime = int(time.time()+600)

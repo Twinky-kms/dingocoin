@@ -19,14 +19,14 @@ fi
 RETVAL=0
 
 prog=dingocoind
-# you can override the lockfile via DINGOCOIND_LOCKFILE in /etc/sysconfig/dingocoind
-lockfile=${DINGOCOIND_LOCKFILE-/var/lock/subsys/dingocoind}
+# you can override the lockfile via DOGECOIND_LOCKFILE in /etc/sysconfig/dingocoind
+lockfile=${DOGECOIND_LOCKFILE-/var/lock/subsys/dingocoind}
 
-# dingocoind defaults to /usr/bin/dingocoind, override with DINGOCOIND_BIN
-dingocoind=${DINGOCOIND_BIN-/usr/bin/dingocoind}
+# dingocoind defaults to /usr/bin/dingocoind, override with DOGECOIND_BIN
+dingocoind=${DOGECOIND_BIN-/usr/bin/dingocoind}
 
-# dingocoind opts default to -disablewallet, override with DINGOCOIND_OPTS
-dingocoind_opts=${DINGOCOIND_OPTS--disablewallet}
+# dingocoind opts default to -disablewallet, override with DOGECOIND_OPTS
+dingocoind_opts=${DOGECOIND_OPTS--disablewallet}
 
 start() {
     echo -n $"Starting $prog: "

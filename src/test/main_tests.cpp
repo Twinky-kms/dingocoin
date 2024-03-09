@@ -1,4 +1,5 @@
 // Copyright (c) 2014-2016 The Bitcoin Core developers
+// Copyright (c) 2021-2022 The Dingocoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,6 +14,7 @@
 
 BOOST_FIXTURE_TEST_SUITE(main_tests, TestingSetup)
 
+<<<<<<< HEAD
 static void TestBlockSubsidyHalvings(const Consensus::Params& consensusParams)
 {
     // tested in dingocoin_tests.cpp
@@ -61,6 +63,8 @@ BOOST_AUTO_TEST_CASE(subsidy_limit_test)
     //BOOST_CHECK_EQUAL(nSum, 2099999997690000ULL);
 }
 
+=======
+>>>>>>> pr/1
 bool ReturnFalse() { return false; }
 bool ReturnTrue() { return true; }
 

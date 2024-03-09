@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # Copyright (c) 2014 Daniel Kraft
+<<<<<<< HEAD
 # Copyright (c) 2015-2018 The Dingocoin Core developers
+=======
+# Copyright (c) 2015-2022 The Dingocoin Core developers
+>>>>>>> pr/1
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 

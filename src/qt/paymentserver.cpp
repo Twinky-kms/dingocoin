@@ -1,4 +1,5 @@
 // Copyright (c) 2011-2016 The Bitcoin Core developers
+// Copyright (c) 2022-2024 The Dingocoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,6 +12,7 @@
 #include "base58.h"
 #include "chainparams.h"
 #include "policy/policy.h"
+#include "random.h"
 #include "ui_interface.h"
 #include "util.h"
 #include "wallet/wallet.h"
@@ -55,6 +57,7 @@ const char* BIP70_MESSAGE_PAYMENTREQUEST = "PaymentRequest";
 const char* BIP71_MIMETYPE_PAYMENT = "application/bitcoin-payment";
 const char* BIP71_MIMETYPE_PAYMENTACK = "application/bitcoin-paymentack";
 const char* BIP71_MIMETYPE_PAYMENTREQUEST = "application/bitcoin-paymentrequest";
+const int IPC_SOCKET_HASH = GetRandInt(INT_MAX);
 
 struct X509StoreDeleter {
       void operator()(X509_STORE* b) {
@@ -84,7 +87,12 @@ static QString ipcServerName()
     // Note that GetDataDir(true) returns a different path
     // for -testnet versus main net
     QString ddir(GUIUtil::boostPathToQString(GetDataDir(true)));
-    name.append(QString::number(qHash(ddir)));
+#if QT_VERSION >= 0x050000
+    name.append(QString::number(qHash(ddir, IPC_SOCKET_HASH)));
+#else
+    QString rseed = QString::number(IPC_SOCKET_HASH);
+    name.append(QString::number(qHash(rseed + ddir + rseed)));
+#endif //QT_VERSION >= 0x050000
 
     return name;
 }
@@ -295,16 +303,11 @@ bool PaymentServer::ipcSendCommandLine()
     return fResult;
 }
 
-PaymentServer::PaymentServer(QObject* parent, bool startLocalServer) :
-    QObject(parent),
-    saveURIs(true),
-    uriServer(0),
-    netManager(0),
-    optionsModel(0)
-{
+void PaymentServer::initializeServer(QObject* parent, QString ipcServerName, bool startLocalServer, bool enableBip70) {
     // Verify that the version of the library that we linked against is
     // compatible with the version of the headers we compiled against.
     GOOGLE_PROTOBUF_VERIFY_VERSION;
+    this->enableBip70 = enableBip70;
 
     // Install global event filter to catch QFileOpenEvents
     // on Mac: sent when you click bitcoin: links
@@ -312,16 +315,11 @@ PaymentServer::PaymentServer(QObject* parent, bool startLocalServer) :
     if (parent)
         parent->installEventFilter(this);
 
-    QString name = ipcServerName();
-
-    // Clean up old socket leftover from a crash:
-    QLocalServer::removeServer(name);
-
     if (startLocalServer)
     {
         uriServer = new QLocalServer(this);
 
-        if (!uriServer->listen(name)) {
+        if (!uriServer->listen(ipcServerName)) {
             // constructor is called early in init, so don't use "Q_EMIT message()" here
             QMessageBox::critical(0, tr("Payment request error"),
                 tr("Cannot start dingocoin: click-to-pay handler"));
@@ -331,6 +329,49 @@ PaymentServer::PaymentServer(QObject* parent, bool startLocalServer) :
             connect(this, SIGNAL(receivedPaymentACK(QString)), this, SLOT(handlePaymentACK(QString)));
         }
     }
+}
+
+PaymentServer::PaymentServer(QObject* parent, bool startLocalServer) :
+    QObject(parent),
+    saveURIs(true),
+    uriServer(0),
+    netManager(0),
+    optionsModel(0)
+{
+    this->initializeServer(parent, ipcServerName(), startLocalServer, false);
+}
+
+
+PaymentServer::PaymentServer(QObject* parent, bool startLocalServer, bool enableBip70) :
+    QObject(parent),
+    saveURIs(true),
+    uriServer(0),
+    netManager(0),
+    optionsModel(0)
+{
+    this->initializeServer(parent, ipcServerName(), startLocalServer, enableBip70);
+}
+
+
+PaymentServer::PaymentServer(QObject* parent, QString ipcServerName, bool startLocalServer) :
+    QObject(parent),
+    saveURIs(true),
+    uriServer(0),
+    netManager(0),
+    optionsModel(0)
+{
+    this->initializeServer(parent, ipcServerName, startLocalServer, false);
+}
+
+
+PaymentServer::PaymentServer(QObject* parent, QString ipcServerName, bool startLocalServer, bool enableBip70Flag) :
+    QObject(parent),
+    saveURIs(true),
+    uriServer(0),
+    netManager(0),
+    optionsModel(0)
+{
+    this->initializeServer(parent, ipcServerName, startLocalServer, enableBip70Flag);
 }
 
 PaymentServer::~PaymentServer()
@@ -414,8 +455,17 @@ void PaymentServer::handleURIOrFile(const QString& s)
 #endif
         if (uri.hasQueryItem("r")) // payment request URI
         {
+            if (!enableBip70) {
+              qDebug() << "PaymentServer::handleURIOrFile: 'r' item supplied but BIP70 disabled.";
+              Q_EMIT message(tr("URI handling"), tr(
+                      "BIP70 payment requests are deprecated and disabled by default. "
+                      "Restart with -enable-bip70 if you absolutely have to use this functionality.\n\n"
+                      "Use this functionality with extreme caution."),
+                  CClientUIInterface::MSG_ERROR);
+              return;
+            }
             QByteArray temp;
-            temp.append(uri.queryItemValue("r"));
+            temp.append(uri.queryItemValue("r").toUtf8());
             QString decoded = QUrl::fromPercentEncoding(temp);
             QUrl fetchUrl(decoded, QUrl::StrictMode);
 
@@ -456,7 +506,17 @@ void PaymentServer::handleURIOrFile(const QString& s)
         }
     }
 
-    if (QFile::exists(s)) // payment request file
+    // payment request file
+    if (!enableBip70) {
+        Q_EMIT message(tr("Payment request file handling"), tr(
+                "Payment request file handling is disabled by default. "
+                "Restart with -enable-bip70 if you absolutely have to use this functionality.\n\n"
+                "Use this functionality with extreme caution."),
+            CClientUIInterface::MSG_ERROR);
+        return;
+    }
+
+    if (QFile::exists(s))
     {
         PaymentRequestPlus request;
         SendCoinsRecipient recipient;
@@ -553,7 +613,7 @@ bool PaymentServer::processPaymentRequest(const PaymentRequestPlus& request, Sen
     QList<std::pair<CScript, CAmount> > sendingTos = request.getPayTo();
     QStringList addresses;
 
-    Q_FOREACH(const PAIRTYPE(CScript, CAmount)& sendingTo, sendingTos) {
+    for (const PAIRTYPE(CScript, CAmount)& sendingTo : sendingTos) {
         // Extract and check destination addresses
         CTxDestination dest;
         if (ExtractDestination(sendingTo.first, dest)) {
@@ -580,8 +640,8 @@ bool PaymentServer::processPaymentRequest(const PaymentRequestPlus& request, Sen
 
         // Extract and check amounts
         CTxOut txOut(sendingTo.second, sendingTo.first);
-        if (txOut.IsDust(dustRelayFee)) {
-            Q_EMIT message(tr("Payment request error"), tr("Requested payment amount of %1 is too small (considered dust).")
+        if (txOut.IsDust(CWallet::discardThreshold)) {
+            Q_EMIT message(tr("Payment request error"), tr("Requested payment amount of %1 is too small (below discard threshold).")
                 .arg(BitcoinUnits::formatWithUnit(optionsModel->getDisplayUnit(), sendingTo.second)),
                 CClientUIInterface::MSG_ERROR);
 
@@ -661,7 +721,7 @@ void PaymentServer::fetchPaymentACK(CWallet* wallet, SendCoinsRecipient recipien
         }
     }
 
-    int length = payment.ByteSize();
+    quint64 length = payment.ByteSizeLong();
     netRequest.setHeader(QNetworkRequest::ContentLengthHeader, length);
     QByteArray serData(length, '\0');
     if (payment.SerializeToArray(serData.data(), length)) {

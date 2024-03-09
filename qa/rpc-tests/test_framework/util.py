@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2014-2016 The Bitcoin Core developers
+# Copyright (c) 2021-2023 The Dingocoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -214,7 +215,7 @@ def wait_for_bitcoind_start(process, url, i):
     '''
     while True:
         if process.poll() is not None:
-            raise Exception('bitcoind exited with status %i during initialization' % process.returncode)
+            raise Exception('dingocoind exited with status %i during initialization' % process.returncode)
         try:
             rpc = get_rpc_proxy(url, i)
             blocks = rpc.getblockcount()
@@ -250,7 +251,11 @@ def initialize_chain(test_dir, num_nodes, cachedir):
         # Create cache directories, run bitcoinds:
         for i in range(MAX_NODES):
             datadir=initialize_datadir(cachedir, i)
+<<<<<<< HEAD
             args = [ os.getenv("DINGOCOIND", "dingocoind"), "-server", "-keypool=1", "-datadir="+datadir, "-discover=0" ]
+=======
+            args = [ os.getenv("DOGECOIND", "dingocoind"), "-server", "-keypool=1", "-datadir="+datadir, "-discover=0" ]
+>>>>>>> pr/1
             if i > 0:
                 args.append("-connect=127.0.0.1:"+str(p2p_port(0)))
             bitcoind_processes[i] = subprocess.Popen(args)
@@ -336,7 +341,11 @@ def start_node(i, dirname, extra_args=None, rpchost=None, timewait=None, binary=
     """
     datadir = os.path.join(dirname, "node"+str(i))
     if binary is None:
+<<<<<<< HEAD
         binary = os.getenv("DINGOCOIND", "dingocoind")
+=======
+        binary = os.getenv("DOGECOIND", "dingocoind")
+>>>>>>> pr/1
     args = [ binary, "-datadir="+datadir, "-server", "-keypool=1", "-discover=0", "-rest", "-mocktime="+str(get_mocktime()) ]
     if extra_args is not None: args.extend(extra_args)
     bitcoind_processes[i] = subprocess.Popen(args)
@@ -509,15 +518,12 @@ def random_transaction(nodes, amount, min_fee, fee_increment, fee_variants):
 
 def assert_fee_amount(fee, tx_size, fee_per_kB):
     """Assert the fee was in range"""
-    target_fee = round_tx_size(tx_size) * fee_per_kB / 1000
+    target_fee = tx_size * fee_per_kB / 1000
     if fee < target_fee:
-        raise AssertionError("Fee of %s BTC too low! (Should be %s BTC)"%(str(fee), str(target_fee)))
+        raise AssertionError("Fee of %s DOGE too low! (Should be %s DOGE)"%(str(fee), str(target_fee)))
     # allow the wallet's estimation to be at most 2 bytes off
-    if fee > round_tx_size(tx_size + 2) * fee_per_kB / 1000:
-        raise AssertionError("Fee of %s BTC too high! (Should be %s BTC)"%(str(fee), str(target_fee)))
-
-def round_tx_size(tx_size):
-    return int(math.ceil(tx_size / 1000.0)) * 1000
+    if fee > (tx_size + 2) * fee_per_kB / 1000:
+        raise AssertionError("Fee of %s DOGE too high! (Should be %s DOGE)"%(str(fee), str(target_fee)))
 
 def assert_equal(thing1, thing2, *args):
     if thing1 != thing2 or any(thing1 != arg for arg in args):

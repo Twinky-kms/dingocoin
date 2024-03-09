@@ -12,17 +12,67 @@ Dingocoin currently employs a simplified variant of scrypt.
 ## License – Much license ⚖️
 Dingocoin Core is released under the terms of the MIT license. See
 [COPYING](COPYING) for more information or see
-[opensource.org](https://opensource.org/licenses/MIT)
+<!-- [opensource.org](https://opensource.org/licenses/MIT)
+<h1 align="center">
+<img src="https://static.tumblr.com/ppdj5y9/Ae9mxmxtp/300coin.png" alt="Dingocoin" width="300"/>
+<br/><br/>
+Dingocoin Core [DOGE, Ð]  
+</h1>
 
-## Development and contributions – omg developers
-Development is ongoing, and the development team, as well as other volunteers,
-can freely work in their own trees and submit pull requests when features or
-bug fixes are ready.
+<div align="center">
 
-#### Version strategy
+[![DingocoinBadge](https://img.shields.io/badge/Doge-Coin-yellow.svg)](https://dingocoin.com)
+[![MuchWow](https://img.shields.io/badge/Much-Wow-yellow.svg)](https://dingocoin.com)
+
+</div> -->
+
+Select language: EN | [CN](./README_zh_CN.md) | [PT](./README_pt_BR.md) | [FA](./README_fa_IR.md) | [VI](./README_vi_VN.md)
+
+Dingocoin is a community-driven cryptocurrency that was inspired by a Shiba Inu meme. The Dingocoin Core software allows anyone to operate a node in the Dingocoin blockchain networks and uses the Scrypt hashing method for Proof of Work. It is adapted from Bitcoin Core and other cryptocurrencies.
+
+For information about the default fees used on the Dingocoin network, please
+refer to the [fee recommendation](doc/fee-recommendation.md).
+
+**Website:** [dingocoin.com](https://dingocoin.com)
+
+## Usage 💻
+
+To start your journey with Dingocoin Core, see the [installation guide](INSTALL.md) and the [getting started](doc/getting-started.md) tutorial.
+
+The JSON-RPC API provided by Dingocoin Core is self-documenting and can be browsed with `dingocoin-cli help`, while detailed information for each command can be viewed with `dingocoin-cli help <command>`. Alternatively, see the [Bitcoin Core documentation](https://developer.bitcoin.org/reference/rpc/) - which implement a similar protocol - to get a browsable version.
+
+### Such ports
+
+Dingocoin Core by default uses port `22556` for peer-to-peer communication that
+is needed to synchronize the "mainnet" blockchain and stay informed of new
+transactions and blocks. Additionally, a JSONRPC port can be opened, which
+defaults to port `22555` for mainnet nodes. It is strongly recommended to not
+expose RPC ports to the public internet.
+
+| Function | mainnet | testnet | regtest |
+| :------- | ------: | ------: | ------: |
+| P2P      |   22556 |   44556 |   18444 |
+| RPC      |   22555 |   44555 |   18332 |
+
+## Ongoing development - Moon plan 🌒
+
+Dingocoin Core is an open source and community driven software. The development
+process is open and publicly visible; anyone can see, discuss and work on the
+software.
+
+Main development resources:
+
+* [GitHub Projects](https://github.com/dingocoin/dingocoin/projects) is used to
+  follow planned and in-progress work for upcoming releases.
+* [GitHub Discussion](https://github.com/dingocoin/dingocoin/discussions) is used
+  to discuss features, planned and unplanned, related to both the development of
+  the Dingocoin Core software, the underlying protocols and the DOGE asset.  
+* [Dingocoindev subreddit](https://www.reddit.com/r/dingocoindev/)
+
+### Version strategy
 Version numbers are following ```major.minor.patch``` semantics.
 
-#### Branches
+### Branches
 There are 3 types of branches in this repository:
 
 - **master:** Stable, contains the latest version of the latest *major.minor* release.
@@ -34,21 +84,27 @@ There are 3 types of branches in this repository:
 *submitted against those. Maintenance branches are there for **bug fixes only,***
 *please submit new features against the development branch with the highest version.*
 
-#### Contributions ✍️
+## Contributing 🤝
 
-Developers are strongly encouraged to write [unit tests](src/test/README.md) for new code, and to
-submit new unit tests for old code. Unit tests can be compiled and run
-(assuming they weren't disabled in configure) with: `make check`. Further details on running
-and extending unit tests can be found in [/src/test/README.md](/src/test/README.md).
+If you find a bug or experience issues with this software, please report it
+using the [issue system](https://github.com/dingocoin/dingocoin/issues/new?assignees=&labels=bug&template=bug_report.md&title=%5Bbug%5D+).
 
-There are also [regression and integration tests](/qa) of the RPC interface, written
-in Python, that are run automatically on the build server.
-These tests can be run (if the [test dependencies](/qa) are installed) with: `qa/pull-tester/rpc-tests.py`
+Please see [the contribution guide](CONTRIBUTING.md) to see how you can
+participate in the development of Dingocoin Core. There are often
+[topics seeking help](https://github.com/dingocoin/dingocoin/labels/help%20wanted)
+where your contributions will have high impact and get very appreciation. wow.
 
-Changes should be tested by somebody other than the developer who wrote the
-code. This is especially important for large or high-risk changes. It is useful
-to add a test plan to the pull request description if testing the changes is
-not straightforward.
+## Communities 🚀🍾
+
+You can join the communities on different social media.
+To see what's going on, meet people & discuss, find the latest meme, learn
+about Dingocoin, give or ask for help, to share your project.
+
+Here are some places to visit:
+
+* [Dingocoin subreddit](https://www.reddit.com/r/dingocoin/)
+* [Discord](https://discord.gg/dingocoin)
+* [Dingocoin Twitter](https://twitter.com/dingocoin)
 
 ## Very Much Frequently Asked Questions ❓
 

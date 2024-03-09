@@ -1,4 +1,4 @@
-# Copyright (c) 2013-2016 The Bitcoin Core developers
+s# Copyright (c) 2013-2016 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -24,23 +24,23 @@ BITCOIN_INCLUDES=-I$(builddir) -I$(builddir)/obj $(BDB_CPPFLAGS) $(BOOST_CPPFLAG
 BITCOIN_INCLUDES += -I$(srcdir)/secp256k1/include
 BITCOIN_INCLUDES += $(UNIVALUE_CFLAGS)
 
-LIBDINGOCOIN_SERVER=libdingocoin_server.a
-LIBDINGOCOIN_COMMON=libdingocoin_common.a
-LIBDINGOCOIN_CONSENSUS=libdingocoin_consensus.a
-LIBDINGOCOIN_CLI=libdingocoin_cli.a
-LIBDINGOCOIN_UTIL=libdingocoin_util.a
-LIBDINGOCOIN_CRYPTO=crypto/libdingocoin_crypto.a
-LIBDINGOCOINQT=qt/libdingocoinqt.a
+LIBDOGECOIN_SERVER=libdingocoin_server.a
+LIBDOGECOIN_COMMON=libdingocoin_common.a
+LIBDOGECOIN_CONSENSUS=libdingocoin_consensus.a
+LIBDOGECOIN_CLI=libdingocoin_cli.a
+LIBDOGECOIN_UTIL=libdingocoin_util.a
+LIBDOGECOIN_CRYPTO=crypto/libdingocoin_crypto.a
+LIBDOGECOINQT=qt/libdingocoinqt.a
 LIBSECP256K1=secp256k1/libsecp256k1.la
 
 if ENABLE_ZMQ
-LIBDINGOCOIN_ZMQ=libdingocoin_zmq.a
+LIBDOGECOIN_ZMQ=libdingocoin_zmq.a
 endif
 if BUILD_BITCOIN_LIBS
-LIBDINGOCOINCONSENSUS=libdingocoinconsensus.la
+LIBDOGECOINCONSENSUS=libdingocoinconsensus.la
 endif
 if ENABLE_WALLET
-LIBDINGOCOIN_WALLET=libdingocoin_wallet.a
+LIBDOGECOIN_WALLET=libdingocoin_wallet.a
 endif
 
 $(LIBSECP256K1): $(wildcard secp256k1/src/*) $(wildcard secp256k1/include/*)
@@ -78,6 +78,7 @@ endif
 BITCOIN_CORE_H = \
   addrdb.h \
   addrman.h \
+  attributes.h \
   auxpow.h \
   base58.h \
   bloom.h \
@@ -101,6 +102,8 @@ BITCOIN_CORE_H = \
   cuckoocache.h \
   dingocoin.cpp \
   dingocoin.h \
+  dingocoin-fees.cpp \
+  dingocoin-fees.h \
   httprpc.h \
   httpserver.h \
   indirectmap.h \
@@ -127,6 +130,7 @@ BITCOIN_CORE_H = \
   protocol.h \
   random.h \
   reverselock.h \
+  rpc/blockchain.h \
   rpc/client.h \
   rpc/protocol.h \
   rpc/server.h \
@@ -141,6 +145,7 @@ BITCOIN_CORE_H = \
   support/allocators/zeroafterfree.h \
   support/cleanse.h \
   support/events.h \
+  support/experimental.h \
   support/lockedpool.h \
   sync.h \
   threadsafety.h \
@@ -154,12 +159,14 @@ BITCOIN_CORE_H = \
   util.h \
   utilmoneystr.h \
   utiltime.h \
+  utilstring.h \
   validation.h \
   validationinterface.h \
   versionbits.h \
   wallet/coincontrol.h \
   wallet/crypter.h \
   wallet/db.h \
+  wallet/rpcutil.h \
   wallet/rpcwallet.h \
   wallet/wallet.h \
   wallet/walletdb.h \
@@ -235,6 +242,7 @@ libdingocoin_wallet_a_SOURCES = \
   wallet/crypter.cpp \
   wallet/db.cpp \
   wallet/rpcdump.cpp \
+  wallet/rpcutil.cpp \
   wallet/rpcwallet.cpp \
   wallet/wallet.cpp \
   wallet/walletdb.cpp \
@@ -264,6 +272,11 @@ crypto_libdingocoin_crypto_a_SOURCES = \
   crypto/sha256.h \
   crypto/sha512.cpp \
   crypto/sha512.h
+
+# only include SSE2 scrypt sources if USE_SCRYPT_SSE2 is defined
+if USE_SCRYPT_SSE2
+crypto_libdingocoin_crypto_a_SOURCES += crypto/scrypt-sse2.cpp
+endif
 
 # consensus: shared between all executables that validate any consensus rules.
 libdingocoin_consensus_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
@@ -353,7 +366,10 @@ libdingocoin_util_a_SOURCES = \
   $(BITCOIN_CORE_H)
 
 if GLIBC_BACK_COMPAT
+
 libdingocoin_util_a_SOURCES += compat/glibc_compat.cpp
+AM_LDFLAGS += $(COMPAT_LDFLAGS)
+
 endif
 
 # cli: shared between bitcoin-cli and bitcoin-qt
@@ -377,8 +393,8 @@ dingocoind_SOURCES += bitcoind-res.rc
 endif
 
 dingocoind_LDADD = \
-  $(LIBDINGOCOIN_SERVER) \
-  $(LIBDINGOCOIN_COMMON) \
+  $(LIBDOGECOIN_SERVER) \
+  $(LIBDOGECOIN_COMMON) \
   $(LIBUNIVALUE) \
   $(LIBDINGOCOIN_UTIL) \
   $(LIBDINGOCOIN_WALLET) \
@@ -402,7 +418,7 @@ dingocoin_cli_SOURCES += bitcoin-cli-res.rc
 endif
 
 dingocoin_cli_LDADD = \
-  $(LIBDINGOCOIN_CLI) \
+  $(LIBDOGECOIN_CLI) \
   $(LIBUNIVALUE) \
   $(LIBDINGOCOIN_UTIL) \
   $(LIBDINGOCOIN_CRYPTO)
@@ -493,20 +509,14 @@ clean-local:
 	## FIXME: How to get the appropriate modulename_CPPFLAGS in here?
 	$(AM_V_GEN) $(WINDRES) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(CPPFLAGS) -DWINDRES_PREPROC -i $< -o $@
 
-.mm.o:
-	$(AM_V_CXX) $(OBJCXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-	  $(CPPFLAGS) $(AM_CXXFLAGS) $(QT_INCLUDES) $(AM_CXXFLAGS) $(PIE_FLAGS) $(CXXFLAGS) -c -o $@ $<
-
 check-symbols: $(bin_PROGRAMS)
-if GLIBC_BACK_COMPAT
 	@echo "Checking glibc back compat..."
-	$(AM_V_at) READELF=$(READELF) CPPFILT=$(CPPFILT) $(top_srcdir)/contrib/devtools/symbol-check.py < $(bin_PROGRAMS)
-endif
+	$(AM_V_at) $(PYTHON) $(top_srcdir)/contrib/devtools/symbol-check.py $(bin_PROGRAMS)
 
 check-security: $(bin_PROGRAMS)
 if HARDEN
 	@echo "Checking binary security..."
-	$(AM_V_at) READELF=$(READELF) OBJDUMP=$(OBJDUMP) $(top_srcdir)/contrib/devtools/security-check.py < $(bin_PROGRAMS)
+	$(AM_V_at) $(PYTHON) $(top_srcdir)/contrib/devtools/security-check.py $(bin_PROGRAMS)
 endif
 
 %.pb.cc %.pb.h: %.proto
