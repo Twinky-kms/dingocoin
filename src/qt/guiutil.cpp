@@ -1,4 +1,5 @@
 // Copyright (c) 2011-2016 The Bitcoin Core developers
+// Copyright (c) 2021 The Dogecoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -16,6 +17,10 @@
 #include "script/script.h"
 #include "script/standard.h"
 #include "util.h"
+
+#ifdef ENABLE_WALLET
+#include "wallet/wallet.h"
+#endif
 
 #ifdef WIN32
 #ifdef _WIN32_WINNT
@@ -79,6 +84,9 @@ extern double NSAppKitVersionNumber;
 #if !defined(NSAppKitVersionNumber10_9)
 #define NSAppKitVersionNumber10_9 1265
 #endif
+#include <QProcess>
+
+void ForceActivation();
 #endif
 
 namespace GUIUtil {
@@ -244,13 +252,15 @@ QString formatBitcoinURI(const SendCoinsRecipient &info)
     return ret;
 }
 
+#ifdef ENABLE_WALLET
 bool isDust(const QString& address, const CAmount& amount)
 {
     CTxDestination dest = CBitcoinAddress(address.toStdString()).Get();
     CScript script = GetScriptForDestination(dest);
     CTxOut txOut(amount, script);
-    return txOut.IsDust(dustRelayFee);
+    return txOut.IsDust(CWallet::discardThreshold);
 }
+#endif
 
 QString HtmlEscape(const QString& str, bool fMultiLine)
 {
@@ -402,6 +412,23 @@ bool isObscured(QWidget *w)
         && checkPoint(QPoint(0, w->height() - 1), w)
         && checkPoint(QPoint(w->width() - 1, w->height() - 1), w)
         && checkPoint(QPoint(w->width() / 2, w->height() / 2), w));
+}
+
+void bringToFront(QWidget* w)
+{
+    #ifdef Q_OS_MAC
+        ForceActivation();
+    #endif
+    if (w) {
+        // activateWindow() (sometimes) helps with keyboard focus on Windows
+        if (w->isMinimized()) {
+            w->showNormal();
+        } else {
+            w->show();
+        }
+        w->activateWindow();
+        w->raise();
+    }
 }
 
 void openDebugLogfile()
@@ -939,6 +966,16 @@ QString formatServicesStr(quint64 mask)
 QString formatPingTime(double dPingTime)
 {
     return (dPingTime == std::numeric_limits<int64_t>::max()/1e6 || dPingTime == 0) ? QObject::tr("N/A") : QString(QObject::tr("%1 ms")).arg(QString::number((int)(dPingTime * 1000), 10));
+}
+
+QString formatBytes(uint64_t bytes)
+{
+    if (bytes < 1000)
+        return QObject::tr("%1 B").arg(bytes);
+    if (bytes < 1000000)
+        return QObject::tr("%1 kB").arg(bytes / 1000);
+
+    return QObject::tr("%1 MB").arg(bytes / 1000000);
 }
 
 QString formatTimeOffset(int64_t nTimeOffset)

@@ -1,4 +1,5 @@
 // Copyright (c) 2011-2016 The Bitcoin Core developers
+// Copyright (c) 2021-2023 The Dogecoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -57,6 +58,7 @@
 #include <QtPrintSupport/QPrinter>
 #include <QtPrintSupport/QPrintDialog>
 #include <QtPrintSupport/QPrintPreviewDialog>
+#include <QtPrintSupport/QPrinterInfo>
 #endif
 #include <QPainter>
 #include "walletmodel.h"
@@ -200,7 +202,7 @@ PaperWalletDialog::PaperWalletDialog(QWidget *parent) :
     ui->buttonBox->addButton(tr("Close"), QDialogButtonBox::RejectRole);
 
     // Begin with a small bold monospace font for the textual version of the key and address.
-    QFont font("Monospace");
+    QFont font("Courier");
     font.setBold(true);
     font.setStyleHint(QFont::TypeWriter);
     font.setPixelSize(1);
@@ -217,7 +219,7 @@ void PaperWalletDialog::setClientModel(ClientModel *_clientModel)
 
     // FIXME: This cannot be the right way of doing something on open
     if (_clientModel && _clientModel->getNetworkActive()) {
-        QMessageBox::critical(this, "Warning: Network Activity Detected", tr("It is recommended to disconnect from the internet before printing paper wallets. Even though paper wallets are generated on your local computer, it is still possible to unknowingly have malware that transmits your screen to a remote location. It is also recommended to print to a local printer vs a network printer since that network traffic can be monitored. Some advanced printers also store copies of each printed document. Proceed with caution relative to the amount of value you plan to store on each address."), QMessageBox::Ok, QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Warning: Network Activity Detected"), tr("It is recommended to disconnect from the internet before printing paper wallets. Even though paper wallets are generated on your local computer, it is still possible to unknowingly have malware that transmits your screen to a remote location. It is also recommended to print to a local printer vs a network printer since that network traffic can be monitored. Some advanced printers also store copies of each printed document. Proceed with caution relative to the amount of value you plan to store on each address."), QMessageBox::Ok, QMessageBox::Ok);
     }
 }
 
@@ -302,7 +304,7 @@ void PaperWalletDialog::on_getNewAddress_clicked()
     // Update the fonts to fit the height of the wallet.
     // This should only really trigger the first time since the font size persists.
     double paperHeight = (double)ui->paperTemplate->height();
-    double maxTextWidth = paperHeight * 0.99;
+    double maxTextWidth = paperHeight * 0.98;
     double minTextWidth = paperHeight * 0.95;
     int pixelSizeStep = 1;
 
@@ -346,22 +348,30 @@ void PaperWalletDialog::on_printButton_clicked()
     QPrinter printer(QPrinter::HighResolution);
     QPrintDialog* qpd = new QPrintDialog(&printer, this);
 
-    qpd->setPrintRange(QAbstractPrintDialog::AllPages);
+    #if QT_VERSION > 0x050000
+    QPrinterInfo printerinfo(printer);
+    QPageSize papersize = printerinfo.defaultPageSize();
+    #endif
 
+    qpd->setPrintRange(QAbstractPrintDialog::AllPages);
     QList<QString> recipientPubKeyHashes;
 
     if (qpd->exec() != QDialog::Accepted) {
         return;
     }
 
-    // Hardcode these values
+
     printer.setOrientation(QPrinter::Portrait);
+    #if QT_VERSION > 0x050000
+    printer.QPagedPaintDevice::setPageSize(papersize);
+    #else
     printer.setPaperSize(QPrinter::A4);
+    #endif
     printer.setFullPage(true);
 
     QPainter painter;
     if (!painter.begin(&printer)) { // failed to open file
-        QMessageBox::critical(this, "Printing Error", tr("failed to open file, is it writable?"), QMessageBox::Ok, QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Printing Error"), tr("failed to open file, is it writable?"), QMessageBox::Ok, QMessageBox::Ok);
         return;
     }
 

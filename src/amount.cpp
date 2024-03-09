@@ -1,5 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2016 The Bitcoin Core developers
+// Copyright (c) 2021-2022 The Dogecoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -24,11 +25,6 @@ CAmount CFeeRate::GetFee(size_t nBytes_) const
 {
     assert(nBytes_ <= uint64_t(std::numeric_limits<int64_t>::max()));
     int64_t nSize = int64_t(nBytes_);
-
-    // Dingocoin: Round up to the nearest 1000 bytes so we get round tx fees
-    if (nSize % 1000 > 0) {
-        nSize = nSize + 1000 - (nSize % 1000);
-    }
 
     CAmount nFee = nSatoshisPerK * nSize / 1000;
 
