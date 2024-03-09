@@ -2765,10 +2765,6 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         }
     }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> doge/master
     else if (strCommand == NetMsgType::FILTERLOAD)
     {
         CBloomFilter filter;
