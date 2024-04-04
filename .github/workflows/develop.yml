@@ -3,9 +3,11 @@ on:
   push:
     branches:
     - develop
+    - testnet2
   pull_request:
     branches:
     - develop
+    - testnet2
 env:
   SOURCE_ARTIFACT: source
 jobs:
