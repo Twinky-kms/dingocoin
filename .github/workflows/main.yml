@@ -9,7 +9,7 @@ on:
     - master
     - develop
 env:
-  SOURCE_ARTIFACT: source
+  SOURCE_ARTIFACT: ./source
 jobs:
   create-source-distribution:
     name: Create Source Distribution
@@ -17,8 +17,6 @@ jobs:
     env:
       ARTIFACT_DIR: ./source
     steps:
-    - name: Ensure Artifact Directory Exists
-      run: mkdir -p ${{ env.SOURCE_ARTIFACT }}
     - name: Checkout
       uses: actions/checkout@v2
     - name: Install Required Packages
@@ -32,7 +30,6 @@ jobs:
         sudo apt-get install libzmq3-dev
         sudo apt-get install libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler
         sudo apt-get install libqrencode-dev
-        sudo apt-get install bash
     - name: Create Distribution Tarball
       run: |
         ./autogen.sh
