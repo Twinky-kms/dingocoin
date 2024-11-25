@@ -9,7 +9,7 @@ on:
     - master
     - develop
 env:
-  SOURCE_ARTIFACT: source
+  SOURCE_ARTIFACT: dingocoin/dingocoin/source
 jobs:
   create-source-distribution:
     name: Create Source Distribution
