@@ -68,14 +68,14 @@ jobs:
       run: |
         tar -xzf depends.tar.gz
         tar -xzf dingocoin-*.tar.gz --strip-components=1
-      working-directory: ${{ env.SOURCE_ARTIFACT }}
+      # working-directory: ${{ env.SOURCE_ARTIFACT }}
     - name: Install Required Packages
       run: |
         sudo apt-get update
         sudo apt-get install -y python3-zmq
     - name: Build Dependencies
       run: make -C depends -j$(nproc)
-      working-directory: ${{ env.SOURCE_ARTIFACT }}
+      # working-directory: ${{ env.SOURCE_ARTIFACT }}
     - name: Build Dingocoin
       run: |
         ./configure --prefix=$(realpath depends/x86_64-pc-linux-gnu)
