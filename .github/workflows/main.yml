@@ -17,6 +17,8 @@ jobs:
     env:
       ARTIFACT_DIR: ./source
     steps:
+    - name: Ensure Artifact Directory Exists
+      run: mkdir -p ${{ env.SOURCE_ARTIFACT }}
     - name: Checkout
       uses: actions/checkout@v2
     - name: Install Required Packages
