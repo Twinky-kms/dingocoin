@@ -60,6 +60,10 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: ${{ env.SOURCE_ARTIFACT }}
+    - name: Debug
+      run: |
+        pwd
+        ls -l 
     - name: Extract Archives
       run: |
         tar -xzf depends.tar.gz
