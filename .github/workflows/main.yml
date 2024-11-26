@@ -78,7 +78,7 @@ jobs:
       # working-directory: ${{ env.SOURCE_ARTIFACT }}
     - name: Build Dingocoin
       run: |
-        ./configure --prefix=$(realpath depends/x86_64-pc-linux-gnu)
+        ./configure --prefix=$(realpath depends/x86_64-pc-linux-gnu) --disable-tests
         make -j$(nproc)
       # working-directory: ${{ env.SOURCE_ARTIFACT }}
     - name: Prepare Files for Artifact
@@ -86,7 +86,7 @@ jobs:
         ls -l
         mkdir -p $ARTIFACT_DIR
         ls -l
-        mv /src/{dingocoin-cli,dingocoin-tx,dingocoind,qt/dingocoin-qt} $ARTIFACT_DIR
+        mv ./src/{dingocoin-cli,dingocoin-tx,dingocoind,qt/dingocoin-qt} $ARTIFACT_DIR
         ls -l
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
@@ -130,7 +130,7 @@ jobs:
         ls -l
         mkdir -p $ARTIFACT_DIR
         ls -l
-        mv /src/{dingocoin-cli.exe,dingocoin-tx.exe,dingocoind.exe,qt/dingocoin-qt.exe} $ARTIFACT_DIR
+        mv ./src/{dingocoin-cli.exe,dingocoin-tx.exe,dingocoind.exe,qt/dingocoin-qt.exe} $ARTIFACT_DIR
         ls -l
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
