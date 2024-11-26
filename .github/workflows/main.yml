@@ -60,34 +60,23 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: ${{ env.SOURCE_ARTIFACT }}
-    - name: Debug
-      run: |
-        pwd
-        ls -l 
     - name: Extract Archives
       run: |
         tar -xzf depends.tar.gz
         tar -xzf dingocoin-*.tar.gz --strip-components=1
-      # working-directory: ${{ env.SOURCE_ARTIFACT }}
     - name: Install Required Packages
       run: |
         sudo apt-get update
         sudo apt-get install -y python3-zmq
     - name: Build Dependencies
       run: make -C depends -j$(nproc)
-      # working-directory: ${{ env.SOURCE_ARTIFACT }}
     - name: Build Dingocoin
       run: |
         ./configure --prefix=$(realpath depends/x86_64-pc-linux-gnu) --disable-tests
         make -j$(nproc)
-      # working-directory: ${{ env.SOURCE_ARTIFACT }}
     - name: Prepare Files for Artifact
       run: |
-        ls -l
-        mkdir -p $ARTIFACT_DIR
-        ls -l
         mv ./src/{dingocoin-cli,dingocoin-tx,dingocoind,qt/dingocoin-qt} $ARTIFACT_DIR
-        ls -l
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
@@ -108,7 +97,6 @@ jobs:
       run: |
         tar -xzf depends.tar.gz
         tar -xzf dingocoin-*.tar.gz --strip-components=1
-      # working-directory: ${{ env.SOURCE_ARTIFACT }}
     - name: Install Required Packages
       run: |
         sudo apt-get update
@@ -119,12 +107,10 @@ jobs:
         sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
     - name: Build Dependencies
       run: make -C depends -j$(nproc) HOST=x86_64-w64-mingw32
-      # working-directory: ${{ env.SOURCE_ARTIFACT }}
     - name: Build Dingocoin
       run: |
         ./configure --prefix=$(realpath depends/x86_64-w64-mingw32)
         make -j$(nproc)
-      # working-directory: ${{ env.SOURCE_ARTIFACT }}
     - name: Prepare Files for Artifact
       run: |
         ls -l
