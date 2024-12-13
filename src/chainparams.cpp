@@ -251,7 +251,7 @@ public:
         consensus.BIP34Hash = uint256S("0x000");
         consensus.BIP65Height = 1;
         consensus.BIP66Height = 1;
-        consensus.newMinProtoHeight = 15000;
+        consensus.newMinProtoHeight = 1;
         consensus.powLimit = uint256S("0x00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20;
         consensus.nPowTargetTimespan = 4 * 60 * 60; // pre-digishield: 4 hours
         consensus.nPowTargetSpacing = 60; // 1 minute
@@ -278,14 +278,14 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 0; // Disabled
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x00");
+        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000000144662338111b2add0");
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0x00"); // 900,000
+        consensus.defaultAssumeValid = uint256S("0x9d53b93b7e1158f3c4b04a45d9bd08ae1c56fe6787786da6ffc20ed7768f10aa"); // 1,420,369
 
         // AuxPoW parameters
-        consensus.nAuxpowChainIds = {0x0062, 0x0099}; // All future chain IDs. Used for permissive block header checks.
-        consensus.nAuxpowChainId = 0x0062; // 98 - Josh Wise!
+        consensus.nAuxpowChainIds = {0x0020, 0x0056}; // All future chain IDs. Used for permissive block header checks.
+        consensus.nAuxpowChainId = 0x0020; // 98 - Josh Wise!
         consensus.fStrictChainId = true;
         consensus.fAllowLegacyBlocks = true;
         consensus.nHeightEffective = 0;
@@ -305,7 +305,7 @@ public:
 
         // AuxPow2
         aux2Consensus = auxpowConsensus;
-        aux2Consensus.nHeightEffective = 9999999; // At 50,000 blocks we switch to new Chain ID of 153
+        aux2Consensus.nHeightEffective = 265000; // At 265,000 blocks we switch to new Chain ID of 50
         aux2Consensus.nAuxpowChainId = 0x0032; // Chain ID of 50
         aux2Consensus.fStrictChainId = true;
         aux2Consensus.fAllowLegacyBlocks = false;
@@ -326,7 +326,7 @@ public:
         vFixedSeeds.clear();
         vSeeds.clear();
         // nodes with support for servicebits filtering should be at the top
-        vSeeds.push_back(CDNSSeedData("testnet", "146.19.215.43"));
+        vSeeds.push_back(CDNSSeedData("testnet", "134.122.22.42"));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,113); // 0x71
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,196); // 0xc4
