@@ -278,10 +278,10 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 0; // Disabled
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000000144662338111b2add0");
+        consensus.nMinimumChainWork = uint256S("0x0000");
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0x9d53b93b7e1158f3c4b04a45d9bd08ae1c56fe6787786da6ffc20ed7768f10aa"); // 1,420,369
+        consensus.defaultAssumeValid = uint256S("0x000"); // 1,420,369
 
         // AuxPoW parameters
         consensus.nAuxpowChainIds = {0x0020, 0x0056}; // All future chain IDs. Used for permissive block header checks.
