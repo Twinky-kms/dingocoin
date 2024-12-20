@@ -102,8 +102,8 @@ CAuxPow::check(const uint256& hashAuxBlock, int nChainId,
         return error("Aux POW merkle root incorrect");
 
     // Check for input
-    if (tx->vin.empty())
-        return error("Aux POW coinbase has no inputs");
+    // if (tx->vin.empty())
+    //     return error("Aux POW coinbase has no inputs");
 
     const CScript script = tx->vin[0].scriptSig;
 
